@@ -62,7 +62,7 @@ def load_data(width=None, height=None, shrinking_method = 'nearest'):
     breed_to_label = {}
     label_to_breed = {}
     #counter for classes (first breed is 1 - last breed is 120, there are only 120 classes)
-    i=1
+    i=0
     for folder in folders:
         #get the breed from the name of the folder
         breed = folder.split('-')[1]
