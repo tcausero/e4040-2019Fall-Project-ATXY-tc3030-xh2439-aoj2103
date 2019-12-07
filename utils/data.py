@@ -24,7 +24,7 @@ def download_data():
         if os.path.exists('./data/dog_images.tar'):
             print('Stanford dogs dataset package already exists.')
         
-def load_data(width=None, height=None, shrinking_method = 'nearest'):
+def load_data(width=224, height=224, shrinking_method = 'nearest'):
     """
     Unpack the Standford dogs dataset and load the datasets.
     All images in the datasets do not have the same shape
@@ -32,8 +32,8 @@ def load_data(width=None, height=None, shrinking_method = 'nearest'):
     :param width: widtht of the images (if None then original width is returned)
     :param shrinking_method: method used to change the shape of the images, it can be 'nearest', 'bilinear', 'bicubic' 
     or  'antialias', see the documentation of pillow (resize) for more information.
-    :return: data, label, label_to_breed, breed_to_label 
-    an array will all data (images are arrays), corresponding labels, a dictionary to match label to breed and 
+    :return: x[mask,:,:,:], y[mask,], label_to_breed, breed_to_label 
+    an array with shuffled data (images are arrays), corresponding labels, a dictionary to match label to breed and 
     a dictionary to match breed to label
     """
     # If the data hasn't been downloaded yet, download it first.
@@ -74,28 +74,32 @@ def load_data(width=None, height=None, shrinking_method = 'nearest'):
         images = glob.glob(folder+'/*')
         #fill data and labels with the images and their label
         #different method to change the shape of an image exists
-        if width and height:
-            if shrinking_method == 'nearest':
-                for image in images:
-                    data.append(np.asarray(Image.open(image).resize((width, height), Image.NEAREST)))
-                    label.append(i)
-            if shrinking_method == 'bilinear':
-                for image in images:
-                    data.append(np.asarray(Image.open(image).resize((width, height), Image.BILINEAR)))
-                    label.append(i)
-            if shrinking_method == 'bicubic':
-                for image in images:
-                    data.append(np.asarray(Image.open(image).resize((width, height), Image.BICUBIC)))
-                    label.append(i)
-            if shrinking_method == 'antialias':
-                for image in images:
-                    data.append(np.asarray(Image.open(image).resize((width, height), Image.ANTIALIAS)))
-                    label.append(i)
-        else: #original shape
+        if shrinking_method == 'nearest':
             for image in images:
-                data.append(np.asarray(Image.open(image)))
+                data.append(np.asarray(Image.open(image).resize((width, height), Image.NEAREST)))
+                label.append(i)
+        if shrinking_method == 'bilinear':
+            for image in images:
+                data.append(np.asarray(Image.open(image).resize((width, height), Image.BILINEAR)))
+                label.append(i)
+        if shrinking_method == 'bicubic':
+            for image in images:
+                data.append(np.asarray(Image.open(image).resize((width, height), Image.BICUBIC)))
+                label.append(i)
+        if shrinking_method == 'antialias':
+            for image in images:
+                data.append(np.asarray(Image.open(image).resize((width, height), Image.ANTIALIAS)))
                 label.append(i)
         i+=1
-    print('Dataset, labels and dictionaies are loaded')
+        
+    #remove weird images (with depth of 4)
+    data = [d for d in data if d.shape[2]==3]
+    label = [label[i] for i in range(len(data)) if data[i].shape[2]==3]
+    
+    #cast to array
+    x = np.asarray(data)
+    y = np.asarray(label)
+        
+    print('Dataset, labels and dictionaries are loaded')
     os.chdir(root_dir)
-    return data, label, label_to_breed, breed_to_label
+    return x, y, label_to_breed, breed_to_label
