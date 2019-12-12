@@ -24,7 +24,7 @@ def download_data():
         if os.path.exists('./data/dog_images.tar'):
             print('Stanford dogs dataset package already exists.')
         
-def load_data(width=224, height=224, shrinking_method = 'nearest'):
+def load_data(width=224, height=224, shrinking_method = 'nearest', n_classes = 120):
     """
     Unpack the Standford dogs dataset and load the datasets.
     All images in the datasets do not have the same shape
@@ -64,34 +64,34 @@ def load_data(width=224, height=224, shrinking_method = 'nearest'):
     #counter for classes (first breed is 1 - last breed is 120, there are only 120 classes)
     i=0
     for folder in folders:
-        #get the breed from the name of the folder
-        breed = folder.split('-')[1]
-        #fill both dictionaries
-        breed_to_label[breed] = i
-        label_to_breed[i]=breed
-        #each folder contains pictures about a specific breed
-        #get the names of all those images
-        images = glob.glob(folder+'/*')
-        #fill data and labels with the images and their label
-        #different method to change the shape of an image exists
-        if shrinking_method == 'nearest':
-            for image in images:
-                data.append(np.asarray(Image.open(image).resize((width, height), Image.NEAREST)))
-                label.append(i)
-        if shrinking_method == 'bilinear':
-            for image in images:
-                data.append(np.asarray(Image.open(image).resize((width, height), Image.BILINEAR)))
-                label.append(i)
-        if shrinking_method == 'bicubic':
-            for image in images:
-                data.append(np.asarray(Image.open(image).resize((width, height), Image.BICUBIC)))
-                label.append(i)
-        if shrinking_method == 'antialias':
-            for image in images:
-                data.append(np.asarray(Image.open(image).resize((width, height), Image.ANTIALIAS)))
-                label.append(i)
-        i+=1
-        
+        if i<n_classes:
+            #get the breed from the name of the folder
+            breed = folder.split('-')[1]
+            #fill both dictionaries
+            breed_to_label[breed] = i
+            label_to_breed[i]=breed
+            #each folder contains pictures about a specific breed
+            #get the names of all those images
+            images = glob.glob(folder+'/*')
+            #fill data and labels with the images and their label
+            #different method to change the shape of an image exists
+            if shrinking_method == 'nearest':
+                for image in images:
+                    data.append(np.asarray(Image.open(image).resize((width, height), Image.NEAREST)))
+                    label.append(i)
+            if shrinking_method == 'bilinear':
+                for image in images:
+                    data.append(np.asarray(Image.open(image).resize((width, height), Image.BILINEAR)))
+                    label.append(i)
+            if shrinking_method == 'bicubic':
+                for image in images:
+                    data.append(np.asarray(Image.open(image).resize((width, height), Image.BICUBIC)))
+                    label.append(i)
+            if shrinking_method == 'antialias':
+                for image in images:
+                    data.append(np.asarray(Image.open(image).resize((width, height), Image.ANTIALIAS)))
+                    label.append(i)
+            i+=1
     #remove weird images (with depth of 4)
     data = [d for d in data if d.shape[2]==3]
     label = [label[i] for i in range(len(data)) if data[i].shape[2]==3]
