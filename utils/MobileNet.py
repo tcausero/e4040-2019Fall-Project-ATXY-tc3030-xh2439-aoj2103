@@ -71,7 +71,7 @@ def separable_convolution(model, kernel_size_1, kernel_size_2, strides_1, stride
     return model
 
 def MobileNet(input_shape, 
-              n_classes = 60, 
+              n_classes = 5,
               alpha = 1, 
               reg_c = None,
               reg_dc = None,
