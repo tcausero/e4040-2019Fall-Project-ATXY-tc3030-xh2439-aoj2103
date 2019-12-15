@@ -89,7 +89,7 @@ def MobileNetV2(input_shape,
     :add_dropout: if True add dropout afte each Dense layer
     :dropout_rate: rate for the dropout
     :optimizer: optimizer for the back propagation (by default RMSprop as in the original paper)
-    return the mobilNet ANN
+    return MobileNet with stride of 1 instead of 2
     """
     
     #clear previous session (equivalent to tf.reset_default_graph())
