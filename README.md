@@ -8,6 +8,6 @@ Final project is on the following article: MobileNets: Efficient Convolutional N
 * CIFAR-10-0.4 : MobileNet architecture with training on CIFAR-10 dataset (with a width multiplier of 0.4)
 * CIFAR-10-0.75 : MobileNet architecture with training on CIFAR-10 dataset (with a width multiplier of 0.75)
 * Builtin_MobileNet.ipynb : MobileNet using the ImageNet pre-trained weights (training on Stanford dogs)
-* requirement.txt : files with all libraries and versions
+* requirement.txt : file with all libraries and versions
 
 If you want to use GPU, you have to download tensorflow-gpu==2.0.0 instead of tensorflow==2.0.0.
